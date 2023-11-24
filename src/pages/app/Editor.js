@@ -64,22 +64,20 @@ export default function Editor(parmas) {
 
 
   const changeHandler = (e) => {
-    console.log("************ event :",e);
    
       const { name, value } = e.target ? e.target : e.originalEvent.target;
 
     
-        const [nestedKey, nestedField] = name.split('-');
+        const [nestedKey, index ,nestedField] = name.split('-');
+    console.log(nestedKey, index ,nestedField);
 
+    console.log({...allValues[nestedKey][index], ...{[nestedField] : value}});
     if (nestedField) {
 
       setAllValues(
         (prevData) => ({
           ...prevData,
-          [nestedKey]: {
-            ...prevData[nestedKey],
-            [nestedField]: value
-          }
+         ...prevData[nestedKey][index] = {...prevData[nestedKey][index], ...{[nestedField] : value}}
         })
       );
       return
@@ -107,11 +105,11 @@ export default function Editor(parmas) {
       {
         if (item.collectionName) {
           obj = {...obj,...{
-            [`${item.collectionName}1`]: {
-              name: "",
-              date: null,
-              discription : ''
-            },
+            [item.collectionName]: [{
+              name: "ddddd",
+              date: '20000',
+              discription : 'ddddd'
+            }],
           }}
         } else if (item.InputName) {
            obj = {

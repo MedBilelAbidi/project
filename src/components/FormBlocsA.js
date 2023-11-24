@@ -50,21 +50,21 @@ export default function FormBlocsA(params) {
       <ul className="list-unstyled">
         {loading? 'wait a sec' : (
             collection.map((value, index) => (
-            <li key={params.InputName? `${params.InputName}${value}`  :  `${params.collectionName}${value}`}>
+            <li key={params.InputName? `${params.InputName}${index}`  :  `${params.collectionName}${index}`}>
             <div  className="mb-2 d-flex ">
             <div  className="mb-2 d-flex flex-column flex-grow-1">
             <InputTextarea
                 className="p-inputtext-sm "
-                id={params.InputName? `${params.InputName}${value}`  :  `${params.collectionName}${value}`}
-                name={params.InputName? `${params.InputName}${value}`  :  `${params.collectionName}${value}-name`}
+                id={params.InputName? `${params.InputName}-${index}`  :  `${params.collectionName}-${index}`}
+                name={params.InputName? `${params.InputName}-${index}`  :  `${params.collectionName}-${index}-name`}
                 placeholder="Ex: Universty Oxford"
-                value={ params.InputName? params.allValues[`${params.InputName}${value}`] :  params.allValues[`${params.collectionName}${value}`]["name"]}
+                value={ params.InputName? params.allValues[`${params.InputName}-${index}`] :  params.allValues[params.collectionName][index]["name"]}
                 onChange={params.changeHandler}
               /> 
               {params.collectionName && (
                 ( <Calendar
-                  name={`education${value}-date`}
-                  value={params.allValues[`${params.collectionName}${value}`]["date"]}
+                  name={`${params.collectionName}-${index}-date`}
+                  value={params.allValues[params.collectionName][index]["date"]}
                   onChange={params.changeHandler}
                   selectionMode="range"
                   view="year"
@@ -76,7 +76,7 @@ export default function FormBlocsA(params) {
 
               {collection.length > 1 && (
                 <Button
-                  key={params.InputName? `${params.InputName}${value}`  :  `${params.collectionName}${value}`}
+                  key={params.InputName? `${params.InputName}-${index}`  :  `${params.collectionName}-${index}`}
                   icon="pi pi-times"
                   onClick={() => handleDelete(index)}
                   rounded
@@ -90,8 +90,8 @@ export default function FormBlocsA(params) {
             {
               (params.hasDiscription && (
                 <InputTextarea
-                  value={params.allValues[`${params.collectionName}${value}`]['discription']}
-                  name={params.InputName? `${params.InputName}${value}`  :  `${params.collectionName}${value}-discription`}
+                  value={params.allValues[params.collectionName][index]['discription']}
+                  name={params.InputName? `${params.InputName}-${index}`  :  `${params.collectionName}-${index}-discription`}
                   placeholder="Your bigraphy"
                   onChange={params.changeHandler}
                   rows={2}
