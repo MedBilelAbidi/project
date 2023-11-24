@@ -1,0 +1,15 @@
+.p-inputtext{
+    border: none;
+    border-bottom: 1px solid #D0D5DD;
+    background: transparent;
+    border-radius: 0px;
+    height: 32px;
+    padding: 0px;
+    padding-left: 8px ;
+    &:focus{
+        border-radius: 4px;
+    }
+}
+.p-datepicker{
+    width: 180px !important;
+}

@@ -1,0 +1,32 @@
+.w-inital{
+    width: initial;
+}
+.disabled{
+    transition : all 0.3s ease; 
+
+    opacity: 0.5;
+    cursor: not-allowed !important;
+
+    *{
+        pointer-events: none;
+    }
+}
+
+.box-shadow {
+    box-shadow: 0 3px 15px 0 rgba(0, 0, 0, 0.08);
+
+}
+// input,
+// button,
+// select,
+// optgroup,
+// textarea {
+//   margin: initial !important; // 1
+//   font-family: initial !important;
+//   line-height: inherit !important;
+// }
+
+// button {
+//     // stylelint-disable-next-line property-disallowed-list
+//     border-radius: initial !important;
+//   }

@@ -1,0 +1,23 @@
+
+.cv-template{
+    max-width: 21cm;
+    transform: scale(1.2);
+    min-height: 29.7cm;
+    margin: auto;
+    .cv-header{
+        min-height: 250px;
+    }
+}
+.cv-review{
+    max-width: 21cm;
+    min-height: 29.7cm;
+    .cv-header{
+        min-height: 250px;
+    }
+}
+.scale-btn-grp{
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    z-index: 1055;
+}
