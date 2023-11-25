@@ -12,18 +12,15 @@ export default function FormBlocsA(params) {
 
   const AddInput = () => {
     setCollection((prevNumbers) => [...prevNumbers, prevNumbers.at(-1) + 1]);
+    const newData = {...params.allValues}
     if (params.collectionName || params.hasDiscription) {
-      params.AddValues({
-        ...params.allValues,
-        [`${params.collectionName}${collection.at(-1) + 1}`]: {
-          name: "",
-          date: null,
-          discription : ''
-        },
-      });
-    } else if (params.InputName) {
-      params.AddValues({ ...params.allValues, [params.InputName]: "" });
-    }
+      newData[params.collectionName].push({
+        name: "",
+        date: null,
+        discription : ''
+      })
+      params.AddValues(newData);
+    } 
   };
   const handleDelete = (index) => {
     setCollection((old) => old.filter((_, i) => i !== index));

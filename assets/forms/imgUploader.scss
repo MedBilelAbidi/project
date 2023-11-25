@@ -1,0 +1,58 @@
+.upload__image-wrapper{
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+
+    .dashed{
+        border: 1px dashed;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        span{
+            font-size: 12px;
+        }
+        &:hover{
+            border-color: #0d6efd;
+          
+        }
+    }
+    img{
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+    }
+    .pi{
+        font-size: 20px;
+        
+    }
+    .remove-btn{
+        position: absolute;
+        z-index: 1;
+        left: 50%;
+        top: 50%;
+        font-size: 50px;
+        transform: translate(-50%, -50%);
+        display: none;
+        cursor: pointer;
+    }
+    &:hover{
+        .remove-btn{
+            display: block;
+        }
+    }
+}

@@ -4,7 +4,9 @@ import { InputNumber } from "primereact/inputnumber";
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import FormBlocsA from "../../components/FormBlocsA";
-import Privew from "../../components/Priview";
+import Preview from "../../components/Preview";
+import ImageUploading from 'react-images-uploading';
+
 const formSchemaLeftBloc = [
   {
    key : 'education' ,
@@ -27,10 +29,10 @@ const formSchemaLeftBloc = [
 
     },
     {
-      key : 'longuage' ,
+      key : 'language' ,
       collectionName :'',
       title : 'Language',
-      InputName :'longuage',
+      InputName :'language',
 
      }]
      const formSchemaRightBloc = [
@@ -57,11 +59,16 @@ const formSchemaLeftBloc = [
 export default function Editor(parmas) {
   const [allValues, setAllValues] = useState({});
   const [EducDeg, setEducDeg] = useState([1]);
+  const [images, setImages] = useState();
 
   const [scals , setScals] = useState(1)
   const [priview, setPriview] = useState(false);
-
-
+  const onChange = (imageList, addUpdateIndex) => {
+    // data for submit
+  
+    console.log(imageList, addUpdateIndex);
+    setImages(imageList);
+  };
 
   const changeHandler = (e) => {
    
@@ -69,20 +76,33 @@ export default function Editor(parmas) {
 
     
         const [nestedKey, index ,nestedField] = name.split('-');
-    console.log(nestedKey, index ,nestedField);
-
-    console.log({...allValues[nestedKey][index], ...{[nestedField] : value}});
+        const newData = { ...allValues };
     if (nestedField) {
 
+     
+
+      // Update the nested key inside the object at the found index
+      newData[nestedKey][index][nestedField] = value;
+
       setAllValues(
-        (prevData) => ({
-          ...prevData,
-         ...prevData[nestedKey][index] = {...prevData[nestedKey][index], ...{[nestedField] : value}}
-        })
+        newData
       );
       return
     }
-    setAllValues({ ...allValues, [name]: value });
+    if (index) {
+      if(newData[nestedKey][index]){
+        newData[nestedKey][index] = value
+      }else{
+        newData[nestedKey].push(value) 
+      }
+      setAllValues(newData);
+
+    }else {
+          setAllValues({...allValues , [name] : value});
+
+    }
+
+    
   };
   const AddValues  = (obj) => {
    
@@ -113,10 +133,11 @@ export default function Editor(parmas) {
           }}
         } else if (item.InputName) {
            obj = {
-            ...obj , ...{[item.InputName]: "" }
+            ...obj , ...{[item.InputName]: [] }
            }
         }
       })
+      console.log(obj)
       setAllValues(obj)
 
   }, []);
@@ -136,7 +157,58 @@ export default function Editor(parmas) {
         <div className="d-flex m-0">
           <div className="col-5">
           <div className=" cv-header p-3 d-flex flex-column justify-content-end">
-            <img src="" />
+           <div>
+           <input type="hidden" value={images} name="img"
+                onChange={changeHandler} />
+           <ImageUploading
+        value={images}
+        onChange={onChange}
+      
+        dataURLKey="data_url"
+        
+      >
+        {({
+          imageList,
+          onImageUpload,
+          onImageUpdate,
+          onImageRemove,
+          isDragging,
+          dragProps,
+        }) => (
+          // write your building UI
+          <div className="upload__image-wrapper">
+          {imageList.length === 0 && (
+            <div className="dashed"  style={isDragging ? { color: ' #0d6efd' } : undefined}
+              onClick={onImageUpload}
+              {...dragProps}>
+            <div
+            className="pi pi-image "
+             
+            >
+
+            </div>
+            <span>
+              drag and drop or click to upload an image
+            </span>
+            </div>
+
+
+          )}
+
+            &nbsp;
+            {imageList.map((image, index) => (
+              <div key={index} className="image-item">
+                <img src={image['data_url']} alt="" width="100" />
+                <div className="image-item__btn-wrapper">
+                  {/* <button onClick={() => onImageUpdate(index)}>Update</button> */}
+                  <i className="pi pi-trash remove-btn text-danger" onClick={() => onImageRemove(index)}></i>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </ImageUploading>
+           </div>
 
 
               <InputTextarea
@@ -198,7 +270,7 @@ export default function Editor(parmas) {
 
           <div className="col-7">
           <div  className="cv-header bg-gray-100">
-            <div className="cv-header p-3 d-flex flex-column justify-content-between">
+            <div className="p-3 d-flex flex-column justify-content-between">
 
 
                 <InputTextarea
@@ -242,7 +314,7 @@ export default function Editor(parmas) {
         content: { className: 'bg-gray-500' }
     }}
      onHide={() => setPriview(false)} >
-                <Privew allValues={allValues} ></Privew>
+                <Preview images={images} allValues={allValues} ></Preview>
             </Dialog>
     </div>
   );
