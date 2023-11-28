@@ -48,6 +48,7 @@ export default function FormBlocsA(params) {
         {loading? 'wait a sec' : (
             collection.map((value, index) => (
             <li key={params.InputName? `${params.InputName}${index}`  :  `${params.collectionName}${index}`}>
+            <div>
             <div  className="mb-2 d-flex ">
             <div  className="mb-2 d-flex flex-column flex-grow-1">
             <InputTextarea
@@ -87,6 +88,7 @@ export default function FormBlocsA(params) {
             {
               (params.hasDiscription && (
                 <InputTextarea
+                className="discription"
                   value={params.allValues[params.collectionName][index]['discription']}
                   name={params.InputName? `${params.InputName}-${index}`  :  `${params.collectionName}-${index}-discription`}
                   placeholder="Your bigraphy"
@@ -98,6 +100,8 @@ export default function FormBlocsA(params) {
             }
           
               </div>
+            </div>
+           
           </li>
 
         ))

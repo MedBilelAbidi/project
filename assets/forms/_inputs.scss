@@ -6,6 +6,8 @@
     height: 32px;
     padding: 0px;
     padding-left: 8px ;
+    font-size: 14px;
+    color: #1D2939;
     &:focus{
         border-radius: 4px;
     }
@@ -13,3 +15,6 @@
 .p-datepicker{
     width: 180px !important;
 }
+textarea {
+    resize: none;
+  }

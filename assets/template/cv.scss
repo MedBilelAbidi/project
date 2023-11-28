@@ -6,6 +6,22 @@
     margin: auto;
     .cv-header{
         min-height: 250px;
+        .p-inputtext{
+            height: 50%;
+        }
+    }
+    .main-bloc{
+        ul {
+            li {
+                .discription{
+                    &.p-inputtext{
+                        min-height: 100px;
+                        height: 100%;
+                        width: 100%;
+                    }
+                }
+            }
+          }
     }
 }
 .cv-review{

@@ -152,11 +152,11 @@ export default function Editor(parmas) {
         <Button icon="pi pi-th-large" onClick={() => setPriview(true)} />
 
       </div>
-      <div className="cv-template box-shadow rounded-1  overflow-hidden bg-white" style={{transform : `scale(${scals})`}} >
+      <div className="cv-template box-shadow rounded-1  overflow-hidden bg-white d-flex" style={{transform : `scale(${scals})`}} >
 
-        <div className="d-flex m-0">
-          <div className="col-5">
-          <div className=" cv-header p-3 d-flex flex-column justify-content-end">
+        <div className="d-flex flex-grow-1 m-0">
+          <div className="col-5 d-flex flex-column ">
+          <div className=" cv-header gap-2 p-3 d-flex flex-column justify-content-end">
            <div>
            <input type="hidden" value={images} name="img"
                 onChange={changeHandler} />
@@ -220,7 +220,7 @@ export default function Editor(parmas) {
               />
 
           </div>
-          <div className="d-flex flex-column gap-4 bg-gray-100 py-5 px-4 position-relative" >
+          <div className="d-flex flex-column flex-grow-1 justify-content-between gap-4 bg-gray-100 py-5 px-4 position-relative" >
 
             <div className="d-flex align-items-center flex-grow-1 gap-2">
             <i className="pi pi-map-marker"></i>
@@ -268,9 +268,9 @@ export default function Editor(parmas) {
           </div>
           </div>
 
-          <div className="col-7">
-          <div  className="cv-header bg-gray-100">
-            <div className="p-3 d-flex flex-column justify-content-between">
+          <div className="col-7 d-flex flex-column ">
+          <div  className="cv-header  bg-gray-100">
+            <div className="p-3 h-100 gap-3  d-flex flex-column justify-content-between">
 
 
                 <InputTextarea
@@ -294,7 +294,7 @@ export default function Editor(parmas) {
                 />
             </div>
           </div>
-          <div className="d-flex flex-column gap-4  py-5 px-4">
+          <div className="d-flex main-bloc flex-column flex-grow-1 gap-4 justify-content-between py-5 px-4">
        
                  {
               formSchemaRightBloc.map(item =>(
