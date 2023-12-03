@@ -33,13 +33,7 @@ export default function EditorLayouts(params) {
 
         </div>
 
-        <div className="fixed-bottom border-top bg-white d-flex flex-wrap justify-content-end px-3 py-2 box-shadow">
-        <span className="p-buttonset">
-                <Button label="Delete" icon="pi pi-trash" />
-                <Button label="Cancel" icon="pi pi-times" />
-                <Button label="Save" icon="pi pi-check" />
-            </span>
-        </div>
+
         </div>
     )
 }
