@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useRef} from "react";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
@@ -8,6 +8,7 @@ import Preview from "../../components/Preview";
 import ImageUploading from "react-images-uploading";
 import axios from 'axios';
 import { useParams } from "react-router-dom";
+import html2canvas from 'html2canvas';
 
 const formSchemaLeftBloc = [
   {
@@ -58,7 +59,6 @@ const formSchemaRightBloc = [
 
 export default function Editor(parmas) {
   const [allValues, setAllValues] = useState({});
-  const [EducDeg, setEducDeg] = useState([1]);
   const [images, setImages] = useState();
   const { id } = useParams();
   const [scals, setScals] = useState(1);
@@ -66,6 +66,9 @@ export default function Editor(parmas) {
   const onChange = (imageList, addUpdateIndex) => {
      setImages(imageList);
   };
+  const [imageData, setImageData] = useState(null);
+  const contentRef = useRef(null);
+
 
   const changeHandler = (e) => {
     const { name, value } = e.target ? e.target : e.originalEvent.target;
@@ -154,9 +157,7 @@ export default function Editor(parmas) {
   setAllValues(newData);
 
  }
-  const handleDelete = (value, index) => {
-    setEducDeg((old) => old.filter((_, i) => i !== index));
-  };
+
   useEffect(() => {
     if (id) {
       const fetchDataById = async () => {
@@ -185,7 +186,7 @@ export default function Editor(parmas) {
   }
   // Handle form submission
   const handleSubmit = () => {
-   
+    saveAsImage()
     let formdata = new FormData()
     const joinArrayWithSeparator = (arr, separator = '#') => (Array.isArray(arr) && arr.length) ? arr.join(separator) : '';
 
@@ -246,6 +247,17 @@ export default function Editor(parmas) {
   }
 
   };
+
+  const saveAsImage = () => {
+    html2canvas(contentRef.current).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      setImageData(imgData);
+      const link = document.createElement('a');
+      link.href = imgData;
+      link.download = 'screenshot.png';
+      link.click();
+    });
+  };
   return (
     <div className="container    p-0 ">
       <div className="scale-btn-grp d-flex flex-column">
@@ -268,7 +280,7 @@ export default function Editor(parmas) {
         <Button icon="pi pi-th-large" onClick={() => setPriview(true)} />
       </div>
       
-        <div
+        <div  ref={contentRef}
           className="cv-template box-shadow rounded-1  overflow-hidden bg-white d-flex"
           style={{ transform: `scale(${scals})` }}
         >
@@ -434,7 +446,7 @@ export default function Editor(parmas) {
         <div className="fixed-bottom border-top bg-white d-flex flex-wrap justify-content-end px-3 py-2 box-shadow">
           <span className="p-buttonset">
             <Button label="Delete" icon="pi pi-trash" />
-            <Button label="Cancel" icon="pi pi-times" />
+            <Button label="Cancel"  icon="pi pi-times" />
             <Button label="Save" onClick={()=> handleSubmit()} icon="pi pi-check" />
           </span>
         </div>
