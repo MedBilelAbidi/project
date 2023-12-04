@@ -11,7 +11,7 @@ export default function Preview(params) {
            
               <div  className="image-item">
               {
-                params.images.length && (
+                params.images && (
                   <img src={params.images[0]['data_url']} alt="" width="100" />
                 )
               }
@@ -23,23 +23,25 @@ export default function Preview(params) {
 
               <h1>{params.allValues.name}</h1>
             </div>
-            <div className="d-flex flex-column  flex-grow-1 justify-content-between gap-4 bg-gray-100 py-5 px-4 position-relative">
-              <div className="d-flex align-items-center flex-grow-1 gap-2">
+            <div className="d-flex flex-column  flex-grow-1 gap-4 bg-gray-100 py-5 px-4 position-relative">
+                <div className="d-flex flex-column   gap-4">
+                <div className="d-flex align-items-center  gap-2">
                 <i className="pi pi-map-marker"></i>
 
                 <p>{params.allValues.addresse}</p>
               </div>
-              <div className="d-flex align-items-center flex-grow-1 gap-2">
+              <div className="d-flex align-items-center gap-2">
                 <i className="pi pi-mobile"></i>
 
                 <p>{params.allValues.tel}</p>
               </div>
 
-              <div className="d-flex align-items-center flex-grow-1 gap-2">
+              <div className="d-flex align-items-center  gap-2">
                 <i className="pi pi-google"></i>
 
                 <p>{params.allValues.email}</p>
               </div>
+                </div>
               <div className="">
      
         <h4>Educational degree</h4>
@@ -51,7 +53,7 @@ export default function Preview(params) {
             <div  className="mb-2 d-flex ">
             <div  className="mb-2 d-flex flex-column flex-grow-1">
             {value.name}
-            {value.date[0] - value.date[1]}
+            {value.date[0] - value.date[1]  }
             </div>
 
             </div>

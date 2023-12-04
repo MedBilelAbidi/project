@@ -22,7 +22,7 @@ export default function EditorLayouts(params) {
       </div>
 
       <ul className="nav nav-pills">
-        <li className="nav-item"><Link href="#" className="nav-link active" aria-current="page">Home</Link></li>
+        <li className="nav-item"><Link to="/" className="nav-link active" aria-current="page">Home</Link></li>
       </ul>
     </header>
   </div>

@@ -26,11 +26,21 @@ export default function FormBlocsA(params) {
     setCollection((old) => old.filter((_, i) => i !== index));
   };
   useEffect(() => {
-    console.log('allValues before component mount:', params.allValues);
     if (params.allValues) {
+    
       setLoading(false)
     }
   }, [params.allValues]);
+  useEffect(() => {
+    if (params.InputName && Array.isArray(params.allValues[params.InputName])) {
+      const newCollection = [1];
+      for (let i = 2; i <= params.allValues[params.InputName].length; i++) {
+        newCollection.push(i);
+      }
+      setCollection(newCollection);
+    }
+  }, [params.allValues, params.InputName]);
+
   return (
     <div>
       <div className="d-flex justify-content-between">
@@ -46,6 +56,7 @@ export default function FormBlocsA(params) {
       </div>
       <ul className="list-unstyled">
         {loading? 'wait a sec' : (
+          
             collection.map((value, index) => (
             <li key={params.InputName? `${params.InputName}${index}`  :  `${params.collectionName}${index}`}>
             <div>
@@ -56,10 +67,10 @@ export default function FormBlocsA(params) {
                 id={params.InputName? `${params.InputName}-${index}`  :  `${params.collectionName}-${index}`}
                 name={params.InputName? `${params.InputName}-${index}`  :  `${params.collectionName}-${index}-name`}
                 placeholder="Ex: Universty Oxford"
-                value={ params.InputName? params.allValues[`${params.InputName}-${index}`] :  params.allValues[params.collectionName][index]["name"]}
+                value={ params.InputName? params.allValues[`${params.InputName}`][index] :  params.allValues[params.collectionName][index]["name"]}
                 onChange={params.changeHandler}
               /> 
-              {params.collectionName && (
+             {params.collectionName && (
                 ( <Calendar
                   name={`${params.collectionName}-${index}-date`}
                   value={params.allValues[params.collectionName][index]["date"]}
@@ -69,7 +80,7 @@ export default function FormBlocsA(params) {
                   dateFormat="yy"
                   placeholder="2023"
                 />)
-              )}
+              )} 
             </div>
 
               {collection.length > 1 && (

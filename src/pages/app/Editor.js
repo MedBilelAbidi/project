@@ -7,6 +7,7 @@ import FormBlocsA from "../../components/FormBlocsA";
 import Preview from "../../components/Preview";
 import ImageUploading from "react-images-uploading";
 import axios from 'axios';
+import { useParams } from "react-router-dom";
 
 const formSchemaLeftBloc = [
   {
@@ -59,14 +60,11 @@ export default function Editor(parmas) {
   const [allValues, setAllValues] = useState({});
   const [EducDeg, setEducDeg] = useState([1]);
   const [images, setImages] = useState();
-
+  const { id } = useParams();
   const [scals, setScals] = useState(1);
   const [priview, setPriview] = useState(false);
   const onChange = (imageList, addUpdateIndex) => {
-    // data for submit
-
-    console.log(imageList, addUpdateIndex);
-    setImages(imageList);
+     setImages(imageList);
   };
 
   const changeHandler = (e) => {
@@ -79,6 +77,8 @@ export default function Editor(parmas) {
       newData[nestedKey][index][nestedField] = value;
 
       setAllValues(newData);
+      console.log(allValues);
+
       return;
     }
     if (index) {
@@ -91,6 +91,7 @@ export default function Editor(parmas) {
     } else {
       setAllValues({ ...allValues, [name]: value });
     }
+    console.log(allValues);
   };
   const AddValues = (obj) => {
     setAllValues({ ...allValues, ...obj });
@@ -99,36 +100,83 @@ export default function Editor(parmas) {
   const scale = (x) => {
     setScals((old) => old + x);
   };
+ const valueGenerator = (array) =>{
+  let obj = {};
+  array.map((item) => {
+    if (item.collectionName) {
+      obj = {
+        ...obj,
+        ...{
+          [item.collectionName]: [
+            {
+              name: "",
+              date: "",
+              discription: "",
+            },
+          ],
+        },
+      };
+    } else if (item.InputName) {
+      obj = {
+        ...obj,
+        ...{ [item.InputName]: [] },
+      };
+    }
+  });
+  setAllValues(obj);
+ }
+ const valueInsert = (data) =>{
+  const splitStringWithSeparator = (str, separator = '#') => (typeof str === 'string' && str.length) ? str.split(separator) : [];
+  const isPossiblySplittedString = (str, separator = '#') => typeof str === 'string' && str.includes(separator);
 
+  let newData = { ...allValues };
+  for (const key in data) {
+   let value = data[key]
+    if (isArrayOfObjects(value)) {
+      const val = value.map((element) => ({
+        id: element.id,
+        name: element.name,
+        date: [new Date(splitStringWithSeparator(element.date)[0]), new Date(splitStringWithSeparator(element.date)[1])],
+        discription: element.discription
+    }));
+    // setAllValues({ ...allValues, [key]: val });
+    newData = {...newData, [key]: val }
+    } 
+    else if(isPossiblySplittedString(value)){
+      newData = {...newData, [key]:  value.split('#') }
+    }else {
+      newData = {...newData, [key]: value }
+    }
+  }
+  if (newData.picture) {
+    setImages([{data_url: newData.picture.fileName}])
+  }
+  setAllValues(newData);
+
+ }
   const handleDelete = (value, index) => {
     setEducDeg((old) => old.filter((_, i) => i !== index));
   };
   useEffect(() => {
-    let obj = {};
+    if (id) {
+      const fetchDataById = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/cvs/${id}`
+          );
+          valueInsert(response.data)
+
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchDataById();
+      
+    }
     let array = [...formSchemaLeftBloc, ...formSchemaRightBloc];
-    array.map((item) => {
-      if (item.collectionName) {
-        obj = {
-          ...obj,
-          ...{
-            [item.collectionName]: [
-              {
-                name: "",
-                date: "",
-                discription: "",
-              },
-            ],
-          },
-        };
-      } else if (item.InputName) {
-        obj = {
-          ...obj,
-          ...{ [item.InputName]: [] },
-        };
-      }
-    });
-    setAllValues(obj);
+    valueGenerator(array)
   }, []);
+
   const   isArrayOnlyStrings = (arr)=> {
     return Array.isArray(arr) && arr.every((item) => typeof item === 'string');
   }
@@ -139,47 +187,63 @@ export default function Editor(parmas) {
   const handleSubmit = () => {
    
     let formdata = new FormData()
+    const joinArrayWithSeparator = (arr, separator = '#') => (Array.isArray(arr) && arr.length) ? arr.join(separator) : '';
 
     for (const key in allValues) {
         const value = allValues[key];
+        if (key === 'id' || key ===  'createdAt' || key === 'updatedAt' || key === 'picture') {
+          continue
+        }
         if (isArrayOnlyStrings(value)) {
-          formdata.append(key, value.join("#"))
+          formdata.append(key, joinArrayWithSeparator(value));
         }
        else if (isArrayOfObjects(value)) {
-          let newDate = ""
-          let val = []
+        // Use map to transform each element in the array
+        const val = value.map(element => ({
+          id: element.id? element.id : null,
+          name: element.name,
+          date: joinArrayWithSeparator(element.date),
+          discription: element.discription
+      }));
 
-          value.forEach(element => {
-            if (Array.isArray(element.date) && element.date.length) {
-              newDate = element.date.join('#')
-            }
-            val.push({name: element.name, date:newDate ,  discription: element.discription})
-
-          });
-           formdata.append(key, JSON.stringify(val))
+      formdata.append(key, JSON.stringify(val));
         }else{
           formdata.append(key, value)
           
         }
 
     }
-    if (images) {
-      formdata.append("file", images[0].file)
+    if (images && images[0]?.file) {
+      // Check if images[0].file is defined before appending to avoid errors
+      formdata.append("file", images[0].file);
+  }
+  console.log( [...formdata.entries()].reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}));
 
-    }
- console.log( [...formdata.entries()].reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}));
-   
- axios.post('http://localhost:3000/cvs/1', formdata, {
-  headers: {
-    'Content-Type': 'multipart/form-data',
-  },
-})
-  .then(response => {
-    console.log('Response:', response.data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+  if (id) {
+    axios.patch(`http://localhost:3000/cvs/${id}`, formdata, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+      .then(response => {
+        console.log('Response:', response.data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }else {
+    axios.post(`http://localhost:3000/cvs/1`, formdata, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+      .then(response => {
+        console.log('Response:', response.data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
 
   };
   return (
@@ -219,6 +283,7 @@ export default function Editor(parmas) {
                     onChange={changeHandler}
                   />
                   <ImageUploading
+                    multiple={false}
                     value={images}
                     onChange={onChange}
                     dataURLKey="data_url"
@@ -273,8 +338,9 @@ export default function Editor(parmas) {
                   onChange={changeHandler}
                 />
               </div>
-              <div className="d-flex flex-column flex-grow-1 justify-content-between gap-4 bg-gray-100 py-5 px-4 position-relative">
-                <div className="d-flex align-items-center flex-grow-1 gap-2">
+              <div className="d-flex flex-column flex-grow-1  gap-4 bg-gray-100 py-5 px-4 position-relative">
+                  <div className="d-flex flex-column   gap-2">
+                  <div className="d-flex align-items-center  gap-2">
                   <i className="pi pi-map-marker"></i>
 
                   <InputTextarea
@@ -285,7 +351,7 @@ export default function Editor(parmas) {
                     onChange={changeHandler}
                   />
                 </div>
-                <div className="d-flex align-items-center flex-grow-1 gap-2">
+                <div className="d-flex align-items-center  gap-2">
                   <i className="pi pi-mobile"></i>
 
                   <InputNumber
@@ -293,11 +359,12 @@ export default function Editor(parmas) {
                     value={allValues.tel}
                     placeholder="Ex: +216 99 999 99"
                     name="tel"
-                    onChange={changeHandler}
+                    onValueChange={changeHandler}
+                    useGrouping={false}
                   />
                 </div>
 
-                <div className="d-flex align-items-center flex-grow-1 gap-2">
+                <div className="d-flex align-items-center  gap-2">
                   <i className="pi pi-google"></i>
 
                   <InputTextarea
@@ -308,8 +375,9 @@ export default function Editor(parmas) {
                     onChange={changeHandler}
                   />
                 </div>
+                  </div>
                 {formSchemaLeftBloc.map((item) => (
-                  <div className="mb-3">
+                  <div className="mb-2">
                     <FormBlocsA
                       key={item.key}
                       InputName={item.InputName}
@@ -326,7 +394,7 @@ export default function Editor(parmas) {
 
             <div className="col-7 d-flex flex-column ">
               <div className="cv-header  bg-gray-100">
-                <div className="p-3 h-100 gap-3  d-flex flex-column justify-content-between">
+                <div className="p-3 h-100 gap-3  d-flex flex-column ">
                   <InputTextarea
                     className="flex-grow-1"
                     value={allValues.title}
@@ -346,7 +414,7 @@ export default function Editor(parmas) {
                   />
                 </div>
               </div>
-              <div className="d-flex main-bloc flex-column flex-grow-1 gap-4 justify-content-between py-5 px-4">
+              <div className="d-flex main-bloc flex-column flex-grow-1 gap-4  py-5 px-4">
                 {formSchemaRightBloc.map((item) => (
                   <FormBlocsA
                     key={item.key}

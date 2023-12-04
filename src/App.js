@@ -7,7 +7,8 @@ function App() {
       <Routes>
         <Route path="/" element={<EditorLayouts />}>
           {/* <Route index element={<Editor />} /> */}
-          <Route path="/" element={<Editor />} />
+          <Route path="/builder" element={<Editor />} />
+          <Route path="edit/:id" element={<Editor />} />
 
         </Route>
       </Routes>
