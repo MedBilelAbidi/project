@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Button } from 'primereact/button';
 import { DataView } from 'primereact/dataview';
 import { Link } from "react-router-dom";
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 
 export default function Home(params) {
@@ -25,27 +26,25 @@ export default function Home(params) {
           
 
       }, []);
-
-      const getSeverity = (product) => {
-        switch (product.inventoryStatus) {
-            case 'INSTOCK':
-                return 'success';
-
-            case 'LOWSTOCK':
-                return 'warning';
-
-            case 'OUTOFSTOCK':
-                return 'danger';
-
-            default:
-                return null;
-        }
+      const accept = () => {
+        
+    }
+      const deleteCV = () => {
+        confirmDialog({
+            message: 'Do you want to delete this record?',
+            header: 'Delete Confirmation',
+            icon: 'pi pi-info-circle',
+            acceptClassName: 'p-button-danger',
+            accept,
+            
+        });
     };
 
   const gridItem = (data) => {
     return (
         <div className="col-4 p-2">
-        
+                    <ConfirmDialog />
+
             <div className="p-4 border-1 surface-border surface-card border-round">
                 <div className="flex flex-wrap align-items-center justify-content-between gap-2">
                     <div className="flex align-items-center gap-2">
@@ -58,7 +57,7 @@ export default function Home(params) {
                     <div className="text-2xl font-bold">{data.name}</div>
                 </div>
                 <div className="flex align-items-center justify-content-between">
-                    <Button icon="pi pi-trash" severity="danger" className="p-button-rounded"></Button>
+                    <Button icon="pi pi-trash" severity="danger" onClick={()=> deleteCV()} className="p-button-rounded"></Button>
                     <Link  to={`builder/edit/${data.id}`} className="p-button-rounded p-button p-component p-button-icon-only p-button-success text-white">
                       <i className="pi pi-pencil"></i>
                     </Link>
