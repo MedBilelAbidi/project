@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -24,13 +23,10 @@ export default function FormBlocsA(params) {
   };
   const handleDelete = (index) => {
     setCollection((old) => old.filter((_, i) => i !== index));
+    let key = params.InputName? params.InputName:  params.collectionName
+    params.delteHundeler(index,key)
   };
-  useEffect(() => {
-    if (params.allValues) {
-    
-      setLoading(false)
-    }
-  }, [params.allValues]);
+
   useEffect(() => {
     if (params.InputName && Array.isArray(params.allValues[params.InputName])) {
       const newCollection = [1];
@@ -38,8 +34,22 @@ export default function FormBlocsA(params) {
         newCollection.push(i);
       }
       setCollection(newCollection);
+      setLoading(false)
+
     }
   }, [params.allValues, params.InputName]);
+  useEffect(() => {
+    if (params.collectionName && Array.isArray(params.allValues[params.collectionName])) {
+      const newCollection = [1];
+
+      for (let i = 2; i <= params.allValues[params.collectionName].length; i++) {
+        newCollection.push(i);
+      }
+      setCollection(newCollection);
+       setLoading(false)
+
+    }
+  }, [params.allValues, params.collectionName]);
 
   return (
     <div>

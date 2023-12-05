@@ -1,11 +1,91 @@
+import React, { useEffect, useRef } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
 export default function Preview(params) {
+
+  const elementRef = useRef(null);
+
+  const htmlInvoicePDF = useRef(null);
+
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  const exportPdf = async (action) => {
+    let printing = true;
+
+
+
+    try {
+      await delay(500);
+      const doc = new jsPDF('p', 'pt', 'a4');
+      const handlePrint = () => {
+        doc.autoPrint();
+        doc.output('dataurlnewwindow');
+      };
+  
+      const handleSave = () => {
+     
+        doc.save(`test.pdf`);
+        
+  
+  
+  
+        // Additional logic as needed
+      };
+      doc.addFont('assets/fonts/Lato-Regular.ttf', 'Lato', 'normal');
+      doc.addFont('assets/fonts/Lato-Bold.ttf', 'Lato', 'bold');
+      doc.setFont('Lato');
+
+      const options = {
+        html2canvas: {
+          scale: 595.26 / 925,
+          removeContainer: true,
+          allowTaint: true,
+          useCORS: true,
+          letterRendering: true,
+          scrollX: 0,
+          scrollY: 0,
+          taintTest: false,
+          logging: false,
+        },
+        x: 0,
+        y: 0,
+        callback: () => {
+          if (action === 'print') {
+            handlePrint();
+          } else {
+            handleSave();
+          }
+
+          // Additional logic as needed
+          printing = false;
+          // Update state or perform other actions
+        },
+      };
+
+      doc.html(htmlInvoicePDF.current, options);
+    } catch (error) {
+      console.error(error);
+    }
+
+    // Update state or perform other actions
+    printing = false;
+    // Additional logic as needed
+  };
+
+  useEffect(() => {
+    exportPdf('print'); // You can change 'print' to 'save' or any other action
+  }, []); // Include dependencies if needed
+
+
   return (
     <div className="container    p-0 ">
-      <div className="cv-review box-shadow rounded-1 mx-auto overflow-hidden bg-white d-flex">
+      <div className="cv-review box-shadow rounded-1 mx-auto overflow-hidden bg-white d-flex" ref={htmlInvoicePDF}>
         <div className="d-flex flex-grow-1 m-0">
           <div className="col-5 d-flex flex-column">
             <div className=" cv-header p-3 d-flex flex-column justify-content-end">
             <div className="upload__image-wrapper">
+            <button onClick={exportPdf}>Save as PDF</button>
 
             &nbsp;
            
