@@ -1,0 +1,32 @@
+.cv-template {
+  max-width: 21cm;
+  transform: scale(1.2);
+  min-height: 29.7cm;
+  margin: auto;
+}
+.cv-template .cv-header {
+  min-height: 250px;
+}
+.cv-template .cv-header .p-inputtext {
+  height: 50%;
+}
+.cv-template .main-bloc ul li .discription.p-inputtext {
+  min-height: 80px;
+  height: 100%;
+  width: 100%;
+}
+
+.cv-review {
+  max-width: 21cm;
+  min-height: 29.7cm;
+}
+.cv-review .cv-header {
+  min-height: 250px;
+}
+
+.scale-btn-grp {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 1055;
+}/*# sourceMappingURL=cv.css.map */

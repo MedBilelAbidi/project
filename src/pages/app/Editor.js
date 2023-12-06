@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { InputTextarea } from "primereact/inputtextarea";
-import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import FormBlocsA from "../../components/FormBlocsA";
@@ -11,6 +10,9 @@ import { useParams } from "react-router-dom";
 import html2canvas from "html2canvas";
 import { InputText } from "primereact/inputtext";
 import { Toast } from 'primereact/toast';
+import { useSelector, useDispatch } from 'react-redux'
+import { initializeState } from "../../store/enable-slice/enableStore";
+import { selectorEnableSlice } from "../../store/enable-slice/enableStore";
 
 const formSchemaLeftBloc = [
   {
@@ -60,6 +62,8 @@ const formSchemaRightBloc = [
 ];
 
 export default function Editor(parmas) {
+  const dispatch = useDispatch()
+  const enable = useSelector(selectorEnableSlice)
   const [allValues, setAllValues] = useState({});
   const [images, setImages] = useState();
   const { id } = useParams();
@@ -188,6 +192,11 @@ const showToast = (detail) => {
     if (newData.picture) {
       setImages([{ data_url: newData.picture.fileName }]);
     }
+    for (const key in enable) {
+      dispatch(initializeState({key: key, value: data[key] }))
+
+    }
+
     setAllValues(newData);
   };
 
@@ -263,6 +272,9 @@ const showToast = (detail) => {
       // Check if images[0].file is defined before appending to avoid errors
       formdata.append("picture", images[0].file);
     }
+    for (const key in enable) {
+      formdata.append(key, enable[key])
+    }
     await saveAsImage()
       .then((file) => {
         if (file) {
@@ -273,12 +285,12 @@ const showToast = (detail) => {
         console.error("Error:", error);
       });
 
-    // console.log(
-    //   [...formdata.entries()].reduce(
-    //     (obj, [key, value]) => ({ ...obj, [key]: value }),
-    //     {}
-    //   )
-    // );
+    console.log(
+      [...formdata.entries()].reduce(
+        (obj, [key, value]) => ({ ...obj, [key]: value }),
+        {}
+      )
+    );
 
     if (id) {
       axios
@@ -360,7 +372,7 @@ const showToast = (detail) => {
   return (
     <div className="container    p-0 ">
      <Toast ref={toast} />
-      <div className="scale-btn-grp d-flex flex-column">
+      <div className="scale-btn-grp d-flex flex-column gap-2">
         <p className="text-white">
           {" "}
           {scals.toFixed(1) == 1 ? Math.round(scals) : scals.toFixed(1)}:1{" "}
@@ -389,7 +401,9 @@ const showToast = (detail) => {
         <div className="d-flex flex-grow-1 m-0">
           <div className="col-5 d-flex flex-column ">
             <div className=" cv-header gap-2 p-3 d-flex flex-column justify-content-end">
-              <div>
+            {
+              enable.enablePhoto && (
+                <div>
                 <input
                   type="hidden"
                   value={images}
@@ -439,6 +453,8 @@ const showToast = (detail) => {
                   )}
                 </ImageUploading>
               </div>
+              )
+            }
 
               <InputTextarea
                 className="flex-grow-1"
@@ -449,8 +465,11 @@ const showToast = (detail) => {
               />
             </div>
             <div className="d-flex flex-column flex-grow-1  gap-4 bg-gray-100 py-5 px-4 position-relative">
-              <div className="d-flex flex-column   gap-2">
-                <div className="d-flex align-items-center  gap-2">
+              {enable.enableInfos && (
+                <div className="d-flex flex-column   gap-2">
+                {
+                  enable.enableAddresse && (
+                    <div className="d-flex align-items-center  gap-2">
                   <i className="pi pi-map-marker"></i>
 
                   <InputTextarea
@@ -461,9 +480,13 @@ const showToast = (detail) => {
                     onChange={changeHandler}
                   />
                 </div>
-                <div className="d-flex align-items-center  gap-2">
+                  )
+                }
+                {
+                  enable.enablePhone && (
+                    <div className="d-flex align-items-center  gap-2">
                   <i className="pi pi-mobile"></i>
-
+ 
                   <InputText
                     className="flex-grow-1"
                     value={allValues.tel}
@@ -472,8 +495,10 @@ const showToast = (detail) => {
                     onChange={changeHandler}
                   />
                 </div>
-
-                <div className="d-flex align-items-center  gap-2">
+                  )}
+                  {
+                    enable.enableEmail && (
+                    <div className="d-flex align-items-center  gap-2">
                   <i className="pi pi-google"></i>
 
                   <InputTextarea
@@ -484,7 +509,11 @@ const showToast = (detail) => {
                     onChange={changeHandler}
                   />
                 </div>
+                  )}
+
+  
               </div>
+              )}
               {formSchemaLeftBloc.map((item) => (
                 <div className="mb-2">
                   <FormBlocsA
@@ -512,8 +541,9 @@ const showToast = (detail) => {
                   name="title"
                   onChange={changeHandler}
                 />
-
-                <InputTextarea
+                  {
+                    enable.enableBio && (
+                      <InputTextarea
                   className="flex-grow-1"
                   value={allValues.bio}
                   name="bio"
@@ -522,6 +552,9 @@ const showToast = (detail) => {
                   rows={2}
                   cols={50}
                 />
+                    )
+                  }
+               
               </div>
             </div>
             <div className="d-flex main-bloc flex-column flex-grow-1 gap-4  py-5 px-4">

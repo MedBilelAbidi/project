@@ -1,15 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
 // styles
 
-import './index.css';
-import './App.scss'
+import "./index.css";
+import "./App.scss";
 import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import store from "./store";
+import { Provider } from "react-redux";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
+  <Provider store={store}>
     <App />
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

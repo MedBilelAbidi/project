@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Editor from "./pages/app/Editor";
 import EditorLayouts from "./layouts/EditorLayouts";
 import Home from "./pages/app/Home";
+
 function App() {
   return (
     <BrowserRouter>

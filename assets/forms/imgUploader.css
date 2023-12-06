@@ -1,0 +1,53 @@
+.upload__image-wrapper {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+.upload__image-wrapper .dashed {
+  border: 1px dashed;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+.upload__image-wrapper .dashed span {
+  font-size: 12px;
+}
+.upload__image-wrapper .dashed:hover {
+  border-color: #0d6efd;
+}
+.upload__image-wrapper img {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.upload__image-wrapper .pi {
+  font-size: 20px;
+}
+.upload__image-wrapper .remove-btn {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  font-size: 50px;
+  transform: translate(-50%, -50%);
+  display: none;
+  cursor: pointer;
+}
+.upload__image-wrapper:hover .remove-btn {
+  display: block;
+}/*# sourceMappingURL=imgUploader.css.map */
