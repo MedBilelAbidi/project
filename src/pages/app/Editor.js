@@ -6,13 +6,14 @@ import FormBlocsA from "../../components/FormBlocsA";
 import Preview from "../../components/Preview";
 import ImageUploading from "react-images-uploading";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import html2canvas from "html2canvas";
 import { InputText } from "primereact/inputtext";
 import { Toast } from 'primereact/toast';
 import { useSelector, useDispatch } from 'react-redux'
 import { initializeState } from "../../store/enable-slice/enableStore";
 import { selectorEnableSlice } from "../../store/enable-slice/enableStore";
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 const formSchemaLeftBloc = [
   {
@@ -62,6 +63,8 @@ const formSchemaRightBloc = [
 ];
 
 export default function Editor(parmas) {
+  const navigate = useNavigate();
+
   const dispatch = useDispatch()
   const enable = useSelector(selectorEnableSlice)
   const [allValues, setAllValues] = useState({});
@@ -273,7 +276,7 @@ const showToast = (detail) => {
       formdata.append("picture", images[0].file);
     }
     for (const key in enable) {
-      formdata.append(key, enable[key])
+      formdata.set(key, enable[key])
     }
     await saveAsImage()
       .then((file) => {
@@ -314,7 +317,7 @@ const showToast = (detail) => {
         });
     } else {
       axios
-        .post(`http://localhost:3000/cvs/1`, formdata, {
+        .post(`http://localhost:3000/cvs/2`, formdata, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -335,6 +338,33 @@ const showToast = (detail) => {
         });
     }
   };
+  const acceptFunc = async (id) => {
+    setSubmit(old => !old)
+
+    try {
+       await axios.delete(
+        `http://localhost:3000/cvs/${id}`
+      );
+      toast.current.show({severity:'success', summary: 'Success', detail:'Message Content', life: 3000});
+      setSubmit(old => !old)
+      navigate(-1)
+   
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setSubmit(old => !old)
+
+      toast.current.show({severity:'error', summary: 'Error', detail:'Message Content', life: 3000});
+    }
+}
+  const confirm = (id) => {
+    confirmDialog({
+        message: 'Do you want to delete this record?',
+        header: 'Delete Confirmation',
+        icon: 'pi pi-info-circle',
+        acceptClassName: 'p-button-danger',
+        accept: () => acceptFunc(id),
+    });
+};
   // Convert data URL to File object
   const dataURLtoFile = (dataURL, fileName) => {
     const arr = dataURL.split(",");
@@ -576,15 +606,22 @@ const showToast = (detail) => {
         </div>
       </div>
       <div className="fixed-bottom border-top bg-white d-flex flex-wrap justify-content-end px-3 py-2 box-shadow">
-        <span className="p-buttonset">
-          <Button label="Delete" icon="pi pi-trash" disabled={submit} />
-          <Button label="Cancel" icon="pi pi-times" disabled={submit} />
+        <span className="d-flex gap-2">
+  
+                <Button label="Cancel" severity="secondary" text onClick={()=>   navigate('/')} icon="pi pi-times" disabled={submit} />
+                {id && (
+                  <Button   severity="danger" outlined  text  label="Delete" 
+            onClick={()=> confirm(id)} icon="pi pi-trash" disabled={submit} />
+                )}
           <Button disabled={submit}
+           severity="success"
             label="Save"
             onClick={() => handleSubmit()}
             icon="pi pi-check"
           />
         </span>
+        <ConfirmDialog />
+
       </div>
 
       <Dialog

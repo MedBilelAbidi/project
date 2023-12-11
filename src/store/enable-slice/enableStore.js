@@ -15,13 +15,14 @@ export const enableSlice = createSlice({
     switchState: (currentState, action) => {
       currentState[action.payload] = !currentState[action.payload]
 
-      if (action.payload === 'enableInfos' && !currentState[action.payload]) {
-        currentState.enableEmail = false
-        currentState.enablePhone = false
-        currentState.enableAddresse = false
+      if (action.payload === 'enableInfos') {
+        currentState.enableEmail = currentState[action.payload]
+        currentState.enablePhone = currentState[action.payload]
+        currentState.enableAddresse = currentState[action.payload]
       }
     },
     initializeState: (currentState, action) => {
+      console.log(action.payload.key,action.payload.value);
       currentState[action.payload.key] = action.payload.value
     },
   }
