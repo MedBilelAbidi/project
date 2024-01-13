@@ -9,7 +9,21 @@ services:
       - "5050:80"
     networks:
       - devops
-
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok-container
+    restart: unless-stopped
+    command:
+      - "start"
+      - "--all"
+      - "--config"
+      - "/etc/ngrok.yml"
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
+    ports:
+      - 4040:4040
+    networks:
+      - test-jenkins-network
 networks:
   devops:
     driver: bridge
