@@ -30,11 +30,14 @@ pipeline {
         }
     }
 
-    post {
+  post {
         always {
-            // Cleanup: Stop and remove the Docker containers
-            script {
-                bat 'docker-compose down'
+            // Wrap the post block with a node block
+            node {
+                // Cleanup: Stop and remove the Docker containers
+                script {
+                    bat 'docker-compose down'
+                }
             }
         }
     }
