@@ -21,22 +21,10 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image with the dynamic tag
-                    bat "docker build -t my-react-app:${DOCKER_TAG} ."
+                    bat "docker-compose build ."
 
                     // Run Docker Compose
                     bat 'docker-compose up -d'
-                }
-            }
-        }
-    }
-
-  post {
-        always {
-            // Wrap the post block with a node block
-            node {
-                // Cleanup: Stop and remove the Docker containers
-                script {
-                    bat 'docker-compose down'
                 }
             }
         }
