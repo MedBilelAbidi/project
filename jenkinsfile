@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     // Stop and remove existing containers with the same name
-                    bat 'docker rm -f react-app-devops || true'
+                    bat 'docker rm -f react-app-1 || true'
                 }
             }
         }

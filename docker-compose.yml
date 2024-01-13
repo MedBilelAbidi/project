@@ -23,7 +23,7 @@ services:
     ports:
       - 4040:4040
     networks:
-      - test-jenkins-network
+      - devops
 networks:
   devops:
     driver: bridge
