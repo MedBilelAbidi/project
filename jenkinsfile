@@ -1,14 +1,6 @@
-def getVersion() {
-    def version = bat(script: 'git rev-parse --short HEAD', returnStatus: true).trim()
-    return version
-}
 
 pipeline {
     agent any
-
-    environment {
-        DOCKER_TAG = getVersion()
-    }
 
     stages {
         stage('Checkout') {
@@ -16,25 +8,24 @@ pipeline {
                 checkout scm
             }
         }
+           stage('Cleanup') {
+            steps {
+                script {
+                    // Stop and remove existing containers with the same name
+                    bat 'docker rm -f react-app-devops || true'
+                }
+            }
+        }
 
         stage('Build and Deploy') {
             steps {
                 script {
                     // Build the Docker image with the dynamic tag
-                    bat "docker build -t my-react-app:${DOCKER_TAG} ."
+                    bat "docker-compose build"
 
                     // Run Docker Compose
                     bat 'docker-compose up -d'
                 }
-            }
-        }
-    }
-
-    post {
-        always {
-            // Cleanup: Stop and remove the Docker containers
-            script {
-                bat 'docker-compose down'
             }
         }
     }
