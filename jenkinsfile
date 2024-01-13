@@ -1,0 +1,41 @@
+def getVersion() {
+    def version = bat(script: 'git rev-parse --short HEAD', returnStatus: true).trim()
+    return version
+}
+
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_TAG = getVersion()
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build and Deploy') {
+            steps {
+                script {
+                    // Build the Docker image with the dynamic tag
+                    bat "docker build -t my-react-app:${DOCKER_TAG} ."
+
+                    // Run Docker Compose
+                    bat 'docker-compose up -d'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Cleanup: Stop and remove the Docker containers
+            script {
+                bat 'docker-compose down'
+            }
+        }
+    }
+}

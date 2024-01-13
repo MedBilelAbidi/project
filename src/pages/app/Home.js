@@ -14,8 +14,9 @@ export default function Home(params) {
         
           const fetchDataById = async () => {
             try {
+             
               const response = await axios.get(
-                `http://localhost:3000/cvs`
+                `${process.env.REACT_APP_API_URL}/cvs`
               );
               setData(old => [...response.data,...old])
             } catch (error) {
@@ -31,7 +32,7 @@ export default function Home(params) {
       const acceptFunc = async (id) => {
         try {
            await axios.delete(
-            `http://localhost:3000/cvs/${id}`
+            `${process.env.REACT_APP_API_URL}/cvs/${id}`
           );
           toast.current.show({severity:'success', summary: 'Success', detail:'Message Content', life: 3000});
           const updatedData = data.filter(item => item.id !== id);

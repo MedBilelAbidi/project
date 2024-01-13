@@ -209,7 +209,7 @@ const showToast = (detail) => {
     if (id) {
       const fetchDataById = async () => {
         try {
-          const response = await axios.get(`http://localhost:3000/cvs/${id}`);
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/cvs/${id}`);
           valueInsert(response.data);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -297,7 +297,7 @@ const showToast = (detail) => {
 
     if (id) {
       axios
-        .patch(`http://localhost:3000/cvs/${id}`, formdata, {
+        .patch(`${process.env.REACT_APP_API_URL}/cvs/${id}`, formdata, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -317,7 +317,7 @@ const showToast = (detail) => {
         });
     } else {
       axios
-        .post(`http://localhost:3000/cvs/2`, formdata, {
+        .post(`${process.env.REACT_APP_API_URL}/cvs/2`, formdata, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -343,7 +343,7 @@ const showToast = (detail) => {
 
     try {
        await axios.delete(
-        `http://localhost:3000/cvs/${id}`
+        `${process.env.REACT_APP_API_URL}/cvs/${id}`
       );
       toast.current.show({severity:'success', summary: 'Success', detail:'Message Content', life: 3000});
       setSubmit(old => !old)

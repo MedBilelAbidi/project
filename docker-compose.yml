@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  react-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5050:80"
+    networks:
+      - devops
+
+networks:
+  devops:
+    driver: bridge
