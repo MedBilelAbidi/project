@@ -1,14 +1,7 @@
-def getVersion() {
-    def version = bat(script: 'git rev-parse --short HEAD', returnStatus: true).trim()
-    return version
-}
+
 
 pipeline {
     agent any
-
-    environment {
-        DOCKER_TAG = getVersion()
-    }
 
     stages {
         stage('Checkout') {
