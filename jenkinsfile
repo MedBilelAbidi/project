@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image with the dynamic tag
-                    bat "docker-compose build ."
+                    bat "docker-compose build"
 
                     // Run Docker Compose
                     bat 'docker-compose up -d'
