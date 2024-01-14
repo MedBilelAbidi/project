@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     // Down all Docker containers
-                    bat 'docker-compose down'
+                    bat 'docker-compose down -v'
                     // Build the Docker image 
                     bat "docker-compose build"
 
