@@ -20,7 +20,9 @@ pipeline {
         stage('Build and Deploy') {
             steps {
                 script {
-                    // Build the Docker image with the dynamic tag
+                    // Down all Docker containers
+                    bat 'docker-compose down'
+                    // Build the Docker image 
                     bat "docker-compose build"
 
                     // Run Docker Compose

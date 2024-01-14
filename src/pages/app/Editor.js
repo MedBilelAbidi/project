@@ -14,7 +14,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { initializeState } from "../../store/enable-slice/enableStore";
 import { selectorEnableSlice } from "../../store/enable-slice/enableStore";
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-
+const headers = {
+  'ngrok-skip-browser-warning': 'true',
+  // Other headers as needed
+};
 const formSchemaLeftBloc = [
   {
     key: "education",
@@ -209,7 +212,8 @@ const showToast = (detail) => {
     if (id) {
       const fetchDataById = async () => {
         try {
-          const response = await axios.get(`${process.env.REACT_APP_API_URL}/cvs/${id}`);
+          const response = (await axios.get(`${process.env.REACT_APP_API_URL}/cvs/${id}`, {headers}))
+         
           valueInsert(response.data);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -300,8 +304,9 @@ const showToast = (detail) => {
         .patch(`${process.env.REACT_APP_API_URL}/cvs/${id}`, formdata, {
           headers: {
             "Content-Type": "multipart/form-data",
+            headers
           },
-        })
+        }).headers.set("ngrok-skip-browser-warning", true)
         .then((response) => {
           console.log("Response:", response.data);
           setSubmit(old => !old)
@@ -321,7 +326,7 @@ const showToast = (detail) => {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        })
+        }).headers.set("ngrok-skip-browser-warning", true)
         .then((response) => {
           console.log("Response:", response.data);
           setSubmit(old => !old)
@@ -343,8 +348,8 @@ const showToast = (detail) => {
 
     try {
        await axios.delete(
-        `${process.env.REACT_APP_API_URL}/cvs/${id}`
-      );
+        `${process.env.REACT_APP_API_URL}/cvs/${id}`, {headers}
+      )
       toast.current.show({severity:'success', summary: 'Success', detail:'Message Content', life: 3000});
       setSubmit(old => !old)
       navigate(-1)

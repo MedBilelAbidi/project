@@ -4,7 +4,10 @@ import { DataView } from 'primereact/dataview';
 import { Link } from "react-router-dom";
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-
+const headers = {
+  'ngrok-skip-browser-warning': 'true',
+  // Other headers as needed
+};
 
 export default function Home(params) {
     const [data, setData] = useState([{title: 'Create New Cv', name: 'Create New Cv' , id: 0 , thumbnail:{fileName : 'http://localhost:80/nestjs/pictures/thumbnail.png'}}])
@@ -16,8 +19,8 @@ export default function Home(params) {
             try {
              
               const response = await axios.get(
-                `${process.env.REACT_APP_API_URL}/cvs`
-              );
+                `${process.env.REACT_APP_API_URL}/cvs`, {headers}
+              )
               setData(old => [...response.data,...old])
             } catch (error) {
               console.error("Error fetching data:", error);
@@ -32,8 +35,8 @@ export default function Home(params) {
       const acceptFunc = async (id) => {
         try {
            await axios.delete(
-            `${process.env.REACT_APP_API_URL}/cvs/${id}`
-          );
+            `${process.env.REACT_APP_API_URL}/cvs/${id}`, headers
+          )
           toast.current.show({severity:'success', summary: 'Success', detail:'Message Content', life: 3000});
           const updatedData = data.filter(item => item.id !== id);
 
