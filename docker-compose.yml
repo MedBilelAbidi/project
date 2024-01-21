@@ -2,13 +2,15 @@ version: '3'
 
 services:
   react-app:
+    image: cv-geneartor-react
+    container_name: cv-geneartor
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "5050:80"
     networks:
-      - devops
+      - devops_front
   ngrok:
     image: ngrok/ngrok:latest
     container_name: ngrok-container
@@ -23,7 +25,8 @@ services:
     ports:
       - 4040:4040
     networks:
-      - devops
+      - devops_front
 networks:
-  devops:
-    driver: bridge
+  devops_front:
+    external:
+      name: devops_api

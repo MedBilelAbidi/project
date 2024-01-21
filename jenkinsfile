@@ -12,19 +12,25 @@ pipeline {
             steps {
                 script {
                     // Stop and remove existing containers with the same name
-                    bat 'docker rm -f react-app-1 || true'
+                    bat 'docker rm -f cv-geneartor || true'
                 }
             }
         }
 
-        stage('Build and Deploy') {
+        stage('Build') {
             steps {
                 script {
-                    // Down all Docker containers
-                    bat 'docker-compose down -v'
+
                     // Build the Docker image 
                     bat "docker-compose build"
 
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                   
                     // Run Docker Compose
                     bat 'docker-compose up -d'
                 }
